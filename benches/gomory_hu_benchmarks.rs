@@ -1,12 +1,12 @@
-use criterion::{criterion_group, criterion_main, Criterion, BenchmarkId, Throughput};
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
+use fastrand;
 use gomory_hu_tree::{
+    gusfield_tree,          // Gomory-Hu tree algorithm
+                            // GomoryHuTree,        // Type is inferred or not strictly needed for benchmark logic
+                            // MaxFlowError,        // Not directly used in benchmark setup logic much
     AdjacencyListFlowGraph, // Concrete graph implementation
     DinicSolver,            // Max-flow solver
-    gusfield_tree,          // Gomory-Hu tree algorithm
-    // GomoryHuTree,        // Type is inferred or not strictly needed for benchmark logic
-    // MaxFlowError,        // Not directly used in benchmark setup logic much
-};
-use fastrand; // For random graph generation and query pair selection
+}; // For random graph generation and query pair selection
 
 // --- Graph Generation Helpers ---
 
@@ -68,7 +68,6 @@ fn generate_grid_graph(side_length: usize) -> AdjacencyListFlowGraph {
     graph
 }
 
-
 // --- Benchmarks ---
 
 fn gomory_hu_construction_benchmarks(c: &mut Criterion) {
@@ -87,7 +86,7 @@ fn gomory_hu_construction_benchmarks(c: &mut Criterion) {
             |b, g| {
                 let solver = DinicSolver::new();
                 b.iter(|| gusfield_tree(g, &solver).unwrap())
-            }
+            },
         );
     }
 
@@ -100,7 +99,7 @@ fn gomory_hu_construction_benchmarks(c: &mut Criterion) {
             |b, g| {
                 let solver = DinicSolver::new();
                 b.iter(|| gusfield_tree(g, &solver).unwrap())
-            }
+            },
         );
     }
 
@@ -114,7 +113,7 @@ fn gomory_hu_construction_benchmarks(c: &mut Criterion) {
             |b, g| {
                 let solver = DinicSolver::new();
                 b.iter(|| gusfield_tree(g, &solver).unwrap())
-            }
+            },
         );
     }
 
@@ -139,22 +138,28 @@ fn min_cut_query_benchmarks(c: &mut Criterion) {
             |b, gh_tree| {
                 b.iter(|| {
                     for _ in 0..NUM_QUERIES_PER_TREE {
-                        if gh_tree.vertex_count() < 2 { continue; }
+                        if gh_tree.vertex_count() < 2 {
+                            continue;
+                        }
                         let s = fastrand::usize(0..gh_tree.vertex_count());
                         let t = fastrand::usize(0..gh_tree.vertex_count());
                         if s != t {
                             criterion::black_box(gh_tree.min_cut_value(s, t));
                         } else {
-                             criterion::black_box(gh_tree.min_cut_value(s, s));
+                            criterion::black_box(gh_tree.min_cut_value(s, s));
                         }
                     }
                 })
-            }
+            },
         );
     }
 
     group.finish();
 }
 
-criterion_group!(benches, gomory_hu_construction_benchmarks, min_cut_query_benchmarks);
+criterion_group!(
+    benches,
+    gomory_hu_construction_benchmarks,
+    min_cut_query_benchmarks
+);
 criterion_main!(benches);

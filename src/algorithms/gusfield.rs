@@ -1,4 +1,4 @@
-use crate::flow::{MaxFlowSolver, MaxFlowError, OriginalGraphView};
+use crate::flow::{MaxFlowError, MaxFlowSolver, OriginalGraphView};
 use crate::tree::{GomoryHuTree, TreeEdge};
 
 /// Errors that can occur during the construction of a Gomory-Hu tree.
@@ -41,10 +41,7 @@ pub enum GomoryHuError {
 // TODO: Implement parallel execution for N-1 max-flow computations when 'parallel' feature is enabled.
 // This would likely involve Rayon scopes within the main loop, if solver instances are Send/Sync
 // or can be created per-thread. Each of the N-1 flow computations is independent.
-pub fn gusfield_tree<G, S>(
-    graph: &G,
-    solver: &S,
-) -> Result<GomoryHuTree, GomoryHuError>
+pub fn gusfield_tree<G, S>(graph: &G, solver: &S) -> Result<GomoryHuTree, GomoryHuError>
 where
     G: OriginalGraphView,
     S: MaxFlowSolver<G, Flow = f64>,

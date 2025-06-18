@@ -100,8 +100,12 @@ pub trait MaxFlowSolver<G: FlowGraph> {
     /// A `Result` containing a tuple `(max_flow_value, min_cut_partition)` if successful.
     /// The `min_cut_partition` (a `MinCut` struct) identifies nodes on the source-side of one minimum cut.
     /// Returns `MaxFlowError` if an issue occurs.
-    fn max_flow_min_cut(&self, graph: &G, source: usize, sink: usize)
-        -> Result<(Self::Flow, MinCut), MaxFlowError>;
+    fn max_flow_min_cut(
+        &self,
+        graph: &G,
+        source: usize,
+        sink: usize,
+    ) -> Result<(Self::Flow, MinCut), MaxFlowError>;
 }
 
 /// A trait for graph views that provide access to all original edges.

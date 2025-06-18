@@ -1,9 +1,9 @@
 use gomory_hu_tree::{
+    gusfield_tree,          // Gomory-Hu tree algorithm
+                            // GomoryHuTree,        // Not directly used for assertions here, but result is this type
+                            // TreeEdge,            // Not directly used
     AdjacencyListFlowGraph, // Concrete graph implementation
     DinicSolver,            // Max-flow solver
-    gusfield_tree,          // Gomory-Hu tree algorithm
-    // GomoryHuTree,        // Not directly used for assertions here, but result is this type
-    // TreeEdge,            // Not directly used
 };
 
 // Helper for float comparisons
@@ -26,7 +26,8 @@ fn test_triangle_graph() {
     graph.add_edge(2, 1, 10.0); // Reverse edge for undirected capacity
 
     let solver = DinicSolver::new();
-    let gh_tree = gusfield_tree(&graph, &solver).expect("Gusfield tree construction failed for line graph (triangle test)");
+    let gh_tree = gusfield_tree(&graph, &solver)
+        .expect("Gusfield tree construction failed for line graph (triangle test)");
 
     // For line graph 0-1-2 with capacities 10:
     // min_cut(0,1) = 10.
@@ -46,11 +47,13 @@ fn test_star_graph() {
     let num_spokes = 5;
     let mut spoke_nodes_indices = Vec::new(); // Store actual graph indices of spoke nodes
 
-    for _i in 0..num_spokes { // Add spoke nodes first
+    for _i in 0..num_spokes {
+        // Add spoke nodes first
         spoke_nodes_indices.push(graph.add_node(()));
     }
 
-    for i in 0..num_spokes { // Then add edges
+    for i in 0..num_spokes {
+        // Then add edges
         let spoke_node_graph_idx = spoke_nodes_indices[i];
         let capacity = (i + 1) as f64; // Capacity for spoke i+1 is (i+1).0
         graph.add_edge(0, spoke_node_graph_idx, capacity);
@@ -58,7 +61,8 @@ fn test_star_graph() {
     }
 
     let solver = DinicSolver::new();
-    let gh_tree = gusfield_tree(&graph, &solver).expect("Gusfield tree construction failed for star graph");
+    let gh_tree =
+        gusfield_tree(&graph, &solver).expect("Gusfield tree construction failed for star graph");
 
     // Min-cut between any two spokes s_i, s_j should be min(cap(0,s_i), cap(0,s_j))
     // Spoke nodes are indexed 1 through 5 in terms of problem description,
@@ -74,9 +78,16 @@ fn test_star_graph() {
             let expected_min_cut = cap_i.min(cap_j);
             let actual_min_cut = gh_tree.min_cut_value(node_idx_i, node_idx_j);
 
-            assert!((actual_min_cut - expected_min_cut).abs() < EPSILON,
+            assert!(
+                (actual_min_cut - expected_min_cut).abs() < EPSILON,
                 "Min-cut between spoke {} (node {}) and spoke {} (node {}) was {}, expected {}",
-                i+1, node_idx_i, j+1, node_idx_j, actual_min_cut, expected_min_cut);
+                i + 1,
+                node_idx_i,
+                j + 1,
+                node_idx_j,
+                actual_min_cut,
+                expected_min_cut
+            );
         }
     }
 
@@ -85,8 +96,13 @@ fn test_star_graph() {
         let spoke_node_graph_idx = spoke_nodes_indices[i]; // Actual graph node index for spoke (i+1)
         let expected_min_cut = (i + 1) as f64; // Capacity of edge (0, spoke_node_graph_idx)
         let actual_min_cut = gh_tree.min_cut_value(0, spoke_node_graph_idx); // 0 is center node index
-         assert!((actual_min_cut - expected_min_cut).abs() < EPSILON,
-                "Min-cut between center (0) and spoke {} (node {}) was {}, expected {}",
-                i+1, spoke_node_graph_idx, actual_min_cut, expected_min_cut);
+        assert!(
+            (actual_min_cut - expected_min_cut).abs() < EPSILON,
+            "Min-cut between center (0) and spoke {} (node {}) was {}, expected {}",
+            i + 1,
+            spoke_node_graph_idx,
+            actual_min_cut,
+            expected_min_cut
+        );
     }
 }

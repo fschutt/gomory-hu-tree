@@ -1,22 +1,26 @@
-use proptest::prelude::*;
-use proptest::collection::vec as prop_vec;
+use gomory_hu_tree::flow::{FlowGraph, OriginalGraphView}; // Traits for graph methods
 use gomory_hu_tree::{
+    gusfield_tree,
     AdjacencyListFlowGraph,
     DinicSolver,
-    gusfield_tree,
     MaxFlowError,
     MaxFlowSolver, // Trait for solver.max_flow_min_cut
 };
-use gomory_hu_tree::flow::{FlowGraph, OriginalGraphView}; // Traits for graph methods
-use std::collections::{VecDeque, HashSet};
+use proptest::collection::vec as prop_vec;
+use proptest::prelude::*;
+use std::collections::{HashSet, VecDeque};
 
 const EPSILON: f64 = 1e-9; // For float comparisons
 
 // --- Helper: Graph Connectivity and Pathfinding ---
 fn has_path_in_adj_list_graph(graph: &AdjacencyListFlowGraph, s: usize, t: usize) -> bool {
-    if s == t { return true; }
+    if s == t {
+        return true;
+    }
     let n = graph.vertex_count(); // Needs FlowGraph in scope
-    if s >= n || t >= n { return false; }
+    if s >= n || t >= n {
+        return false;
+    }
 
     let mut visited = vec![false; n];
     let mut queue = VecDeque::new();
@@ -25,8 +29,11 @@ fn has_path_in_adj_list_graph(graph: &AdjacencyListFlowGraph, s: usize, t: usize
     visited[s] = true;
 
     while let Some(u) = queue.pop_front() {
-        if u == t { return true; }
-        for (from, to, capacity) in graph.all_edges() { // Needs OriginalGraphView in scope
+        if u == t {
+            return true;
+        }
+        for (from, to, capacity) in graph.all_edges() {
+            // Needs OriginalGraphView in scope
             if from == u && capacity > EPSILON && !visited[to] {
                 if to < n {
                     visited[to] = true;
@@ -39,7 +46,10 @@ fn has_path_in_adj_list_graph(graph: &AdjacencyListFlowGraph, s: usize, t: usize
 }
 
 // --- Proptest Strategies ---
-fn arbitrary_graph_strategy(min_nodes: usize, max_nodes: usize) -> impl Strategy<Value = AdjacencyListFlowGraph> {
+fn arbitrary_graph_strategy(
+    min_nodes: usize,
+    max_nodes: usize,
+) -> impl Strategy<Value = AdjacencyListFlowGraph> {
     (min_nodes..=max_nodes).prop_flat_map(move |num_nodes| {
         if num_nodes == 0 {
             return Just(AdjacencyListFlowGraph::new()).boxed();
@@ -48,47 +58,57 @@ fn arbitrary_graph_strategy(min_nodes: usize, max_nodes: usize) -> impl Strategy
 
         (
             Just(num_nodes),
-            prop_vec((0..num_nodes, 0..num_nodes, 1.0..100.0f64), 0..=num_edge_tuples_to_generate)
-        ).prop_map(|(n, edges_tuples)| {
-            let mut graph = AdjacencyListFlowGraph::new();
-            for _ in 0..n { graph.add_node(()); }
+            prop_vec(
+                (0..num_nodes, 0..num_nodes, 1.0..100.0f64),
+                0..=num_edge_tuples_to_generate,
+            ),
+        )
+            .prop_map(|(n, edges_tuples)| {
+                let mut graph = AdjacencyListFlowGraph::new();
+                for _ in 0..n {
+                    graph.add_node(());
+                }
 
-            let mut actual_edges = HashSet::new();
+                let mut actual_edges = HashSet::new();
 
-            for (u, v, cap) in edges_tuples {
-                if u != v {
-                    if !actual_edges.contains(&(u,v)) {
-                        graph.add_edge(u, v, cap);
-                        actual_edges.insert((u,v));
-                    }
-                    if !actual_edges.contains(&(v,u)) {
-                        graph.add_edge(v, u, cap);
-                        actual_edges.insert((v,u));
+                for (u, v, cap) in edges_tuples {
+                    if u != v {
+                        if !actual_edges.contains(&(u, v)) {
+                            graph.add_edge(u, v, cap);
+                            actual_edges.insert((u, v));
+                        }
+                        if !actual_edges.contains(&(v, u)) {
+                            graph.add_edge(v, u, cap);
+                            actual_edges.insert((v, u));
+                        }
                     }
                 }
-            }
-            graph
-        })
-        .boxed()
+                graph
+            })
+            .boxed()
     })
 }
 
-fn arbitrary_connected_graph_strategy(min_nodes: usize, max_nodes: usize) -> impl Strategy<Value = AdjacencyListFlowGraph> {
-    arbitrary_graph_strategy(min_nodes.max(1), max_nodes)
-        .prop_map(|mut graph| {
-            let n = graph.vertex_count(); // Needs FlowGraph in scope
-            if n <= 1 { return graph; }
-            for i in 0..(n - 1) {
-                 graph.add_edge(i, i + 1, 1.0);
-                 graph.add_edge(i + 1, i, 1.0);
-            }
-            graph
-        })
+fn arbitrary_connected_graph_strategy(
+    min_nodes: usize,
+    max_nodes: usize,
+) -> impl Strategy<Value = AdjacencyListFlowGraph> {
+    arbitrary_graph_strategy(min_nodes.max(1), max_nodes).prop_map(|mut graph| {
+        let n = graph.vertex_count(); // Needs FlowGraph in scope
+        if n <= 1 {
+            return graph;
+        }
+        for i in 0..(n - 1) {
+            graph.add_edge(i, i + 1, 1.0);
+            graph.add_edge(i + 1, i, 1.0);
+        }
+        graph
+    })
 }
 
 fn distinct_vertex_pair_strategy(num_nodes: usize) -> impl Strategy<Value = (usize, usize)> {
     if num_nodes < 2 {
-        return Just((0,0)).boxed();
+        return Just((0, 0)).boxed();
     }
     (0..num_nodes, 0..num_nodes)
         .prop_filter("Vertices s and t must be distinct", |(s, t)| s != t)

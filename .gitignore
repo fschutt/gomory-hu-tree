@@ -1,5 +1,6 @@
 # Rust target directory
 /target/
+Cargo.lock
 
 # VS Code settings
 .vscode/

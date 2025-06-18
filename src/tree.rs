@@ -1,4 +1,4 @@
-use std::collections::{VecDeque, HashMap};
+use std::collections::{HashMap, VecDeque};
 
 /// Represents an edge in the Gomory-Hu tree.
 ///
@@ -25,7 +25,11 @@ impl TreeEdge {
     /// * `target` - The target vertex index.
     /// * `capacity` - The capacity of the edge, representing a min-cut value.
     pub fn new(source: usize, target: usize, capacity: f64) -> Self {
-        Self { source, target, capacity }
+        Self {
+            source,
+            target,
+            capacity,
+        }
     }
 }
 
@@ -53,7 +57,10 @@ impl GomoryHuTree {
     /// * `edges` - A vector of `TreeEdge`s forming the tree.
     /// * `vertex_count` - The number of vertices in the original graph.
     pub fn new(edges: Vec<TreeEdge>, vertex_count: usize) -> Self {
-        Self { edges, vertex_count }
+        Self {
+            edges,
+            vertex_count,
+        }
     }
 
     /// Calculates the min-cut value between two vertices `s` and `t` from the original graph.
@@ -82,7 +89,10 @@ impl GomoryHuTree {
         }
         if s >= self.vertex_count || t >= self.vertex_count {
             // This check is important as s and t are used as indices.
-            panic!("Vertex index out of bounds (s: {}, t: {}, vc: {})", s, t, self.vertex_count);
+            panic!(
+                "Vertex index out of bounds (s: {}, t: {}, vc: {})",
+                s, t, self.vertex_count
+            );
         }
         if s == t {
             return f64::INFINITY;
@@ -93,8 +103,12 @@ impl GomoryHuTree {
         // or a specialized tree data structure (e.g., for LCA) would be better.
         let mut adj: HashMap<usize, Vec<(usize, f64)>> = HashMap::new();
         for edge in &self.edges {
-            adj.entry(edge.source).or_default().push((edge.target, edge.capacity));
-            adj.entry(edge.target).or_default().push((edge.source, edge.capacity));
+            adj.entry(edge.source)
+                .or_default()
+                .push((edge.target, edge.capacity));
+            adj.entry(edge.target)
+                .or_default()
+                .push((edge.source, edge.capacity));
         }
 
         // BFS to find path from s to t and the minimum capacity on that path.
@@ -106,7 +120,6 @@ impl GomoryHuTree {
         // Size based on vertex_count from original graph.
         let mut visited_bfs = vec![false; self.vertex_count];
         visited_bfs[s] = true; // s is known to be < self.vertex_count due to earlier panic.
-
 
         while let Some((curr, path_min_cap, current_path)) = queue.pop_front() {
             if curr == t {

@@ -107,7 +107,8 @@ where
 /// Default implementation for `AdjacencyListFlowGraph`.
 /// Creates an empty graph. Requires `N` to implement `Default`.
 impl<N> Default for AdjacencyListFlowGraph<N>
-where N: Default + Clone + std::fmt::Debug
+where
+    N: Default + Clone + std::fmt::Debug,
 {
     fn default() -> Self {
         Self {

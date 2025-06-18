@@ -1,6 +1,6 @@
 pub mod dinic;
-pub mod traits;
-pub mod graph; // Add this line
+pub mod graph;
+pub mod traits; // Add this line
 
 pub use self::dinic::DinicSolver;
 pub use self::graph::AdjacencyListFlowGraph; // Add this line

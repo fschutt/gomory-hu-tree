@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) YYYY Your Name <you@example.com> <!-- TODO: Update placeholder -->
+Copyright (c) 2025 Felix Schütt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
