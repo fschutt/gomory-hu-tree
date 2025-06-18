@@ -1,0 +1,43 @@
+[package]
+name = "gomory-hu-tree"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.64.0" # Specify the MSRV
+
+authors = ["Your Name <you@example.com>"] # Replace with actual author details
+description = "A Rust implementation of the Gomory-Hu tree algorithm for finding all-pairs min-cuts in a graph."
+documentation = "https://docs.rs/gomory-hu-tree" # URL to where the documentation will be hosted
+readme = "README.md"
+homepage = "https://github.com/username/gomory-hu-tree" # URL to the project's homepage
+repository = "https://github.com/username/gomory-hu-tree" # URL to the project's repository
+license = "MIT OR Apache-2.0"
+keywords = ["graph", "min-cut", "gomory-hu", "network-flow", "algorithms"]
+categories = ["algorithms", "data-structures", "science"]
+
+[dependencies]
+thiserror = "1.0"
+serde = { version = "1.0", optional = true, features = ["derive"] }
+rayon = { version = "1.7", optional = true }
+petgraph = "0.6" # Made petgraph a direct dependency
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.0"
+fastrand = "2.0"
+approx = "0.5"
+
+[features]
+default = ["std"]
+std = [] # For no_std compatibility, though not fully supported initially
+serde = ["dep:serde"] # Enables serialization/deserialization
+parallel = ["dep:rayon"] # Enables parallel computation using Rayon
+visualization = [] # petgraph is now a direct dependency. Feature kept for conditional viz code.
+
+[[bench]]
+name = "gomory_hu_benchmarks"
+harness = false
+
+[[test]]
+name = "property_tests"
+path = "tests/property_tests.rs"
+harness = true # proptest needs the standard test harness

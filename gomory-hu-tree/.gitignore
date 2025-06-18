@@ -1,0 +1,27 @@
+# Rust target directory
+/target/
+
+# VS Code settings
+.vscode/
+
+# Editor-specific files
+*.swp
+*.swo
+*~
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.idea/
+
+# Local configuration (if any)
+config.local.toml
+
+# Coverage reports
+lcov.info
+*.profraw
+
+# Criterion benchmark output (if not in target/)
+criterion/

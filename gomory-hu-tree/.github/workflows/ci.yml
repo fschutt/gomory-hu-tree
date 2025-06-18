@@ -1,0 +1,108 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust: [stable, beta, nightly]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain ${{ matrix.rust }}
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: rustfmt, clippy
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy checks
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Build crate
+        run: cargo build --verbose --all-features
+
+      - name: Run unit and integration tests (lib)
+        run: cargo test --lib --all-features
+
+      - name: Run integration tests (specific tests)
+        run: cargo test --test '*' --all-features # Runs all tests in tests/
+
+      - name: Run documentation tests
+        run: cargo test --doc --all-features
+
+      # - name: Run property-based tests
+      #   run: cargo test --test property -- --ignored
+
+      # - name: Run benchmarks
+      #   run: cargo bench --all-features
+
+      # - name: Install cargo-llvm-cov
+      #   uses: taiki-e/install-action@cargo-llvm-cov
+      #   if: matrix.rust == 'stable' # Typically run coverage on stable
+
+      # - name: Generate coverage report
+      #   run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+      #   if: matrix.rust == 'stable'
+
+      # - name: Upload to codecov
+      #   uses: codecov/codecov-action@v3
+      #   if: matrix.rust == 'stable'
+      #   with:
+      #     files: lcov.info
+
+  # benchmark:
+  #   name: Performance Benchmarks
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push'
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Install Rust toolchain
+  #     uses: dtolnay/rust-toolchain@stable
+  #   - name: Run benchmarks
+  #     run: cargo bench --all-features
+  #   - name: Store benchmark results
+  #     uses: benchmark-action/github-action-benchmark@v1
+  #     with:
+  #       tool: 'cargo'
+  #       output-file-path: target/criterion/report/index.html
+
+  # coverage:
+  #   name: Code Coverage
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Install Rust toolchain
+  #     uses: dtolnay/rust-toolchain@stable
+  #     with:
+  #       components: llvm-tools-preview
+  #   - name: Install cargo-llvm-cov
+  #     uses: taiki-e/install-action@cargo-llvm-cov
+  #   - name: Generate coverage report
+  #     run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+  #   - name: Upload to codecov
+  #     uses: codecov/codecov-action@v3
+  #     with:
+  #       files: lcov.info
+
+  # publish_dry_run:
+  #   name: Publish Dry Run
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only on merge to main
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Install Rust toolchain
+  #       uses: dtolnay/rust-toolchain@stable
+  #     - name: Cargo publish dry run
+  #       run: cargo publish --dry-run
