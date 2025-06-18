@@ -63,8 +63,7 @@ where
         // though petgraph.add_edge would panic anyway if node doesn't exist.
         let node_count = self.graph.node_count();
         if u_idx >= node_count || v_idx >= node_count {
-            panic!("Attempted to add edge with out-of-bounds vertex index. u_idx: {}, v_idx: {}, node_count: {}",
-                   u_idx, v_idx, node_count);
+            panic!("Attempted to add edge with out-of-bounds vertex index. u_idx: {u_idx}, v_idx: {v_idx}, node_count: {node_count}");
         }
         let u_node = NodeIndex::new(u_idx);
         let v_node = NodeIndex::new(v_idx);

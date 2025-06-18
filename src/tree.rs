@@ -169,7 +169,7 @@ impl GomoryHuTree {
             // If N=1, edges list is empty. If N=0, vertex_count is 0.
             // This ensures all original nodes are listed if there are no tree edges.
             for i in 0..self.vertex_count {
-                dot.push_str(&format!("  {}\n", i));
+                dot.push_str(&format!("  {i}\n"));
             }
         } else {
             for edge in &self.edges {
