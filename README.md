@@ -26,7 +26,7 @@ can be queried efficiently (currently O(N) in this implementation, with potentia
 1.  **Add to `Cargo.toml`**:
     ```toml
     [dependencies]
-    gomory_hu_tree = "0.1.0" # Replace with the actual version from crates.io
+    gomory_hu_tree = "1.0.0"
     ```
 
 2.  **Basic Usage**:
@@ -136,4 +136,4 @@ For major changes, please open an issue first to discuss the proposed changes.
 
 ## License
 
-This project is licensed under the MIT license (`LICENSE-MIT` or [http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT))
+This project is licensed under the [MIT license](http://opensource.org/licenses/MIT).
