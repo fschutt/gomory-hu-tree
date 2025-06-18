@@ -1,9 +1,9 @@
-# Gomory-Hu Tree Construction (`gomory-hu-tree`)
+# gomory-hu-tree
 
 [![Crates.io](https://img.shields.io/crates/v/gomory-hu-tree.svg)](https://crates.io/crates/gomory-hu-tree) <!-- TODO: Update when published -->
 [![Documentation](https://docs.rs/gomory-hu-tree/badge.svg)](https://docs.rs/gomory-hu-tree) <!-- TODO: Update when published -->
-<!-- [![Build Status](https://github.com/username/gomory-hu-tree/workflows/CI/badge.svg)](https://github.com/username/gomory-hu-tree/actions) -->
-<!-- [![Coverage](https://codecov.io/gh/username/gomory-hu-tree/branch/main/graph/badge.svg)](https://codecov.io/gh/username/gomory-hu-tree) -->
+[![Build Status](https://github.com/fschutt/gomory-hu-tree/workflows/CI/badge.svg)](https://github.com/fschutt/gomory-hu-tree/actions)
+<!-- [![Coverage](https://codecov.io/gh/fschutt/gomory-hu-tree/branch/main/graph/badge.svg)](https://codecov.io/gh/fschutt/gomory-hu-tree) -->
 
 A Rust implementation of **Gomory-Hu Cut Tree Construction**, providing efficient
 all-pairs minimum cut queries. After an initial preprocessing step to build the tree
