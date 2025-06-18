@@ -1,10 +1,10 @@
 [package]
 name = "gomory-hu-tree"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 rust-version = "1.64.0" # Specify the MSRV
 
-authors = ["Your Name <you@example.com>"] # Replace with actual author details
+authors = ["Felix Schütt <felix.schuett@maps4print.com>"] # Replace with actual author details
 description = "A Rust implementation of the Gomory-Hu tree algorithm for finding all-pairs min-cuts in a graph."
 documentation = "https://docs.rs/gomory-hu-tree" # URL to where the documentation will be hosted
 readme = "README.md"

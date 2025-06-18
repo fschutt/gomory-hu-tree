@@ -1,7 +1,7 @@
 use gomory_hu_tree::{
-    gusfield_tree,          // Gomory-Hu tree algorithm
-                            // GomoryHuTree,        // Not directly used for assertions here, but result is this type
-                            // TreeEdge,            // Not directly used
+    gusfield_tree, // Gomory-Hu tree algorithm
+    // GomoryHuTree,        // Not directly used for assertions here, but result is this type
+    // TreeEdge,            // Not directly used
     AdjacencyListFlowGraph, // Concrete graph implementation
     DinicSolver,            // Max-flow solver
 };
@@ -52,12 +52,11 @@ fn test_star_graph() {
         spoke_nodes_indices.push(graph.add_node(()));
     }
 
-    for i in 0..num_spokes {
+    for (i, spoke_node_graph_idx) in spoke_nodes_indices.iter().enumerate().take(num_spokes) {
         // Then add edges
-        let spoke_node_graph_idx = spoke_nodes_indices[i];
         let capacity = (i + 1) as f64; // Capacity for spoke i+1 is (i+1).0
-        graph.add_edge(0, spoke_node_graph_idx, capacity);
-        graph.add_edge(spoke_node_graph_idx, 0, capacity); // Undirected
+        graph.add_edge(0, *spoke_node_graph_idx, capacity);
+        graph.add_edge(*spoke_node_graph_idx, 0, capacity); // Undirected
     }
 
     let solver = DinicSolver::new();
@@ -92,10 +91,9 @@ fn test_star_graph() {
     }
 
     // Min-cut between center (0) and any spoke s_k (node index spoke_nodes_indices[k-1]) should be cap(0,s_k)
-    for i in 0..num_spokes {
-        let spoke_node_graph_idx = spoke_nodes_indices[i]; // Actual graph node index for spoke (i+1)
+    for (i, spoke_node_graph_idx) in spoke_nodes_indices.iter().enumerate().take(num_spokes) {
         let expected_min_cut = (i + 1) as f64; // Capacity of edge (0, spoke_node_graph_idx)
-        let actual_min_cut = gh_tree.min_cut_value(0, spoke_node_graph_idx); // 0 is center node index
+        let actual_min_cut = gh_tree.min_cut_value(0, *spoke_node_graph_idx); // 0 is center node index
         assert!(
             (actual_min_cut - expected_min_cut).abs() < EPSILON,
             "Min-cut between center (0) and spoke {} (node {}) was {}, expected {}",

@@ -1,9 +1,8 @@
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
-use fastrand;
 use gomory_hu_tree::{
-    gusfield_tree,          // Gomory-Hu tree algorithm
-                            // GomoryHuTree,        // Type is inferred or not strictly needed for benchmark logic
-                            // MaxFlowError,        // Not directly used in benchmark setup logic much
+    gusfield_tree, // Gomory-Hu tree algorithm
+    // GomoryHuTree,        // Type is inferred or not strictly needed for benchmark logic
+    // MaxFlowError,        // Not directly used in benchmark setup logic much
     AdjacencyListFlowGraph, // Concrete graph implementation
     DinicSolver,            // Max-flow solver
 }; // For random graph generation and query pair selection

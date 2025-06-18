@@ -2,9 +2,9 @@ name: Rust CI
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "master" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -42,11 +42,11 @@ jobs:
       - name: Run documentation tests
         run: cargo test --doc --all-features
 
-      # - name: Run property-based tests
-      #   run: cargo test --test property -- --ignored
+      - name: Run property-based tests
+        run: cargo test --test property_tests -- --ignored
 
-      # - name: Run benchmarks
-      #   run: cargo bench --all-features
+      - name: Run benchmarks
+        run: cargo bench --all-features
 
       # - name: Install cargo-llvm-cov
       #   uses: taiki-e/install-action@cargo-llvm-cov

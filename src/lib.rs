@@ -107,8 +107,8 @@ pub use algorithms::{gusfield_tree, GomoryHuError};
 // Max-flow solvers, traits, errors, and graph representation
 pub use flow::{
     AdjacencyListFlowGraph, // Graph data structure compatible with the solvers
-                            // MinCut, FlowGraph, OriginalGraphView might be used internally or by users building custom graphs/solvers
-                            // but are not essential for basic Gomory-Hu tree usage.
+    // MinCut, FlowGraph, OriginalGraphView might be used internally or by users building custom graphs/solvers
+    // but are not essential for basic Gomory-Hu tree usage.
     DinicSolver,   // A concrete max-flow solver using Dinic's algorithm
     MaxFlowError,  // Error type for max-flow computations
     MaxFlowSolver, // Trait for max-flow algorithms

@@ -34,11 +34,9 @@ fn has_path_in_adj_list_graph(graph: &AdjacencyListFlowGraph, s: usize, t: usize
         }
         for (from, to, capacity) in graph.all_edges() {
             // Needs OriginalGraphView in scope
-            if from == u && capacity > EPSILON && !visited[to] {
-                if to < n {
-                    visited[to] = true;
-                    queue.push_back(to);
-                }
+            if from == u && capacity > EPSILON && !visited[to] && to < n {
+                visited[to] = true;
+                queue.push_back(to);
             }
         }
     }
